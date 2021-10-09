@@ -1,4 +1,6 @@
 var car1, car2
+var obstacle
+var obstacleImg
 var coin
 var coinNumber = 0;
 var fuel
@@ -15,6 +17,14 @@ var play = 1;
 var end = 0;
 var gameState = play
 
+function preload(){
+  coinImg = loadImage("assets/coin.png")
+  car1Img = loadImage("assets/carimg.png")
+  car2Img = loadImage("assets/car2img.png")
+  backgroundImg= loadImage("assets/background.jpg")
+  fuelImg = loadImage("assets/fuelcan.png")
+  obstacleImg = loadImage("assets/obstacleSprite.png")
+ }
 function setup() {
   createCanvas(800,800);
   bg = createSprite(400,400);
@@ -35,33 +45,34 @@ function setup() {
   fuel.scale = 0.2
   fuel.addImage(fuelImg);
   
-  bg.velocityY = 5;
+  coinGroup = createGroup();
   fuelGroup = createGroup();
+  obstacleGroup = createGroup();
   
 }
-function preload(){
- coinImg = loadImage("assets/coin.png")
- car1Img = loadImage("assets/carimg.png")
- car2Img = loadImage("assets/car2img.png")
- backgroundImg= loadImage("assets/background.jpg")
- fuelImg = loadImage("assets/fuelcan.png")
-}
+
 
 function draw() {
   background(255,255,255) 
 
 if(gameState===play){
   spawnFuel();
+  spawnCoins();
+  spawnObstacles();
 
-  if(car1.isTouching(coin)){
-    coinNumber = coinNumber + 1;
+  for(var a = 0; a < coinGroup.length; a++ ){
+    if(car1.isTouching(coinGroup[a])){
+      coinNumber = coinNumber + 1;
+      coinGroup[a].destroy();
+    }
   }
   
-  if (bg.y > 400){
-   bg.y = height/2;
+  
+  if (bg.y > 800){
+  bg.y = height/2;
  }
  bg.velocityY = 5;
- 
+ console.log(bg.y);
  
  if(keyDown("A")){
    car1.x = car1.x + -8;
@@ -95,10 +106,31 @@ fuelTank.velocityX = Math.round(random(-10,10))
 fuelTank.addImage(fuelImg)
 fuelTank.scale = 0.2
  fuelGroup.add(fuelTank)
- 
+ fuel.lifetime = 800
 }
 
 x = 450
 y = 0
 
+}
+function spawnCoins(){
+if(frameCount % 60 === 0){
+ coin = createSprite(Math.round(random(50,750)),0,50,50)
+ coin.velocityY = Math.round(random(5,8)) 
+ //coin.velocityX = Math.round(random(-10,10))
+ coin.addImage(coinImg)
+coinGroup.add(coin)
+coin.lifetime = 800
+coin.scale = 0.15
+}
+}
+function spawnObstacles(){
+if(frameCount % 100 === 0){
+  obstacle = createSprite(Math.round(random(50,750)),0)
+  obstacle.velocityY = Math.round(random(6,10))
+  obstacle.addImage(obstacleImg)
+  obstacleGroup.add(obstacle)
+  obstacle.lifetime = 800
+  obstacle.scale = 0.2
+}
 }
