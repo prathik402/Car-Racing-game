@@ -24,6 +24,8 @@ var end = 0;
 var gameState = play
 var restart
 var restartImg
+var gameOver 
+var gameOverImg
 
 function preload(){
   coinImg = loadImage("assets/coin.png")
@@ -34,6 +36,7 @@ function preload(){
   obstacleImg = loadImage("assets/obstacleSprite.png")
   lifeImg = loadImage("assets/heartSprite.png")
   restartImg = loadImage("assets/restart.png")
+  gameOverImg = loadImage("assets/gameover.png")
  }
 function setup() {
   createCanvas(windowWidth,windowHeight);
@@ -64,6 +67,10 @@ function setup() {
   restart.addImage(restartImg)
   restart.scale = 0.5
 
+  gameOver= createSprite(300,450)
+  gameOver.addImage(gameOverImg)
+  gameOver.scale = 0.5
+
   coinGroup = createGroup();
   fuelGroup = createGroup();
   obstacleGroup = createGroup();
@@ -76,7 +83,7 @@ function draw() {
 
 if(gameState===play){
   restart.visible = false;
-  
+  gameOver.visible= false;
   car1.visible = true;
   car2.visible= true;
   bg.visible=true;
@@ -177,10 +184,11 @@ drawSprites();
 
    
 }else if(gameState === end){
-  text("GAMEOVER",300,450)
+  
   background("lightblue") 
   textSize(40)
   restart.visible = true;
+  gameOver.visible = true;
   bg.visible = false;
   car1.visible = false;
   car2.visible = false;
@@ -225,7 +233,7 @@ if(mousePressedOver(restart)){
 }
 function spawnFuel(){
 if(frameCount % 60 === 0){
-fuelTank = createSprite(x,y,50,50)
+fuelTank = createSprite((Math.round(random(50,1750)),0,50,50))
 fuelTank.velocityY = Math.round(random(8,14))
 fuelTank.velocityX = Math.round(random(-10,10))
 fuelTank.addImage(fuelImg)
@@ -234,13 +242,12 @@ fuelTank.scale = 0.2
  fuel.lifetime = 800
 }
 
-x = 450
-y = 0
+
 
 }
 function spawnCoins(){
 if(frameCount % 60 === 0){
- coin = createSprite(Math.round(random(50,750)),0,50,50)
+ coin = createSprite(Math.round(random(50,1750)),0,50,50)
  coin.velocityY = Math.round(random(5,8)) 
  //coin.velocityX = Math.round(random(-10,10))
  coin.addImage(coinImg)
@@ -251,7 +258,7 @@ coin.scale = 0.15
 }
 function spawnObstacles(){
 if(frameCount % 100 === 0){
-  obstacle = createSprite(Math.round(random(50,750)),0)
+  obstacle = createSprite(Math.round(random(50,1750)),0)
   obstacle.velocityY = Math.round(random(6,10))
   obstacle.addImage(obstacleImg)
   obstacleGroup.add(obstacle)
@@ -261,6 +268,14 @@ if(frameCount % 100 === 0){
 }
 function reset(){
   gameState = play;
+  fuelNumber1 = 0;
+  fuelNumber2 = 0;
+  coinNumber1 = 0;
+  coinNumber2 = 0;
+  car1Lives = 3;
+  car2Lives = 3;
+  life.visible = true;
   
+
 
 }
